@@ -1,0 +1,15 @@
+name: webportal:0.0.1
+gateways:
+  80/http: webportal/app_port
+clusters:
+  webportal:
+    services:
+      breed: 
+        name: webportal
+        deployable: harshals/webportal:0.0.1
+        ports:
+          app_port: 80/tcp
+      scale:
+        cpu: 0.2
+        memory: 64MB
+        instances: 1
