@@ -1,6 +1,6 @@
 name: webportal:0.0.2
 gateways:
-  80/http: webportal/app_port
+  81/http: webportal/app_port
 clusters:
   webportal:
     services:
