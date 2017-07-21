@@ -1,3 +1,5 @@
+@Grab(group='org.yaml', module='snakeyaml', version='1.4')
+
 import groovy.json.JsonSlurperClassic
 
 import org.yaml.snakeyaml.DumperOptions
