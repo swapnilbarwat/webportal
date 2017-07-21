@@ -1,6 +1,3 @@
-@GrabConfig(systemClassLoader=true)
-@Grab('org.yaml:snakeyaml:1.4')
-
 import groovy.json.JsonSlurperClassic
 
 import org.yaml.snakeyaml.DumperOptions
