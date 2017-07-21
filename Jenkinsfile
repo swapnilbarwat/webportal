@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurperClassic 
+import groovy.json.JsonSlurperClassic
 
 def version = ''
 node {
@@ -51,6 +51,7 @@ node {
           }
         }
      }
+     sh "echo ${version} > /tmp/preversion"
 }
 
 node {
@@ -58,7 +59,7 @@ node {
       input message: 'Deploy to full cluster?'
    }
    stage('undeploy previous version') {
-      echo "undeploying cluster"
+
    }
 }
 
