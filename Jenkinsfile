@@ -61,7 +61,11 @@ node {
    stage('undeploy previous version') {
         script {
           def preVersion=readFile("/tmp/preversion")
-          sh "output=$("cat deployment/blueprint.yml | sed -e \"s/${version}/${preVersion}/g\")"
+          deploymentContent=readFile("deployment/blueprint.yml")
+          deploymentContent.replace(preVersion,version)
+          def fp = new FilePath("oldDeployment.yml"")
+          fp.write(deploymentContent,null)
+          echo "${deploymentContent}"
         }
    }
 }
