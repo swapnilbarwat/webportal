@@ -1,4 +1,4 @@
-this.class.classLoader.rootLoader.addURL( new URL("file:///var/lib/jenkins/jar/snakeyaml-1.4.jar") )
+this.class.classLoader.this.class.classLoader.addUrl("/var/lib/jenkins/jar/snakeyaml-1.4.jar")
 
 import groovy.json.JsonSlurperClassic
 
