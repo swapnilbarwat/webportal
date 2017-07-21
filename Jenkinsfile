@@ -54,7 +54,7 @@ node {
      def preVersionFileExist= fileExists '/tmp/preversion'
      if(preVersionFileExist) {
         def preVersionCheck = readFile("/tmp/preversion").trim()
-        def result=combinePath(preVersionCheck,version)
+        def result=combinePath(version,preVersionCheck)
         print "compare ${result}"
      }
      else {
