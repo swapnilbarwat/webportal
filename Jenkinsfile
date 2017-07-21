@@ -54,10 +54,8 @@ node {
      def preVersionFileExist= fileExists '/tmp/preversion'
      if(preVersionFileExist) {
         def preVersionCheck = readFile("/tmp/preversion")
-        if(Float.parseFloat(version) < Float.parseFloat(preVersionCheck)) {
-          print "writting to file.."
-          sh "echo ${version} > /tmp/preversion"
-        }
+        def result=combinePath(preVersionCheck,version)
+        print "compare ${result}"
      }
      else {
         sh "echo ${version} > /tmp/preversion"
@@ -83,4 +81,22 @@ node {
 @NonCPS
 def jsonParse(def json) {
     new groovy.json.JsonSlurperClassic().parseText(json)
+}
+
+def combinePath(version1, version2) 
+{
+  String[] levels1 = version1.split("\\.");
+    String[] levels2 = version2.split("\\.");
+
+    int length = Math.max(levels1.length, levels2.length);
+    for (int i = 0; i < length; i++){
+        Integer v1 = i < levels1.length ? Integer.parseInt(levels1[i]) : 0;
+        Integer v2 = i < levels2.length ? Integer.parseInt(levels2[i]) : 0;
+        int compare = v1.compareTo(v2);
+        if (compare != 0){
+            return compare;
+        }
+    }
+
+    return 0;
 }
