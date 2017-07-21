@@ -63,8 +63,8 @@ node {
           def preVersion=readFile("/tmp/preversion")
           deploymentContent=readFile("deployment/blueprint.yml")
           deploymentContent.replace(preVersion,version)
-          def fp = new FilePath("oldDeployment.yml")
-          fp.write(deploymentContent,null)
+          def fp = new File("oldDeployment.yml")
+          fp.write(deploymentContent)
           echo "${deploymentContent}"
         }
    }
