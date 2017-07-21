@@ -51,7 +51,16 @@ node {
           }
         }
      }
-     sh "echo ${version} > /tmp/preversion"
+     def preVersionFileExist= fileExists '/tmp/preversion'
+     if(preVersionFileExist) {
+        def preVersionCheck = readFile("/tmp/preversion")
+        if(preVersionCheck != version && preVersion < version) {
+          sh "echo ${version} > /tmp/preversion"
+        }
+     }
+     else {
+        sh "echo ${version} > /tmp/preversion"
+     }
 }
 
 node {
