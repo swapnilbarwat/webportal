@@ -55,7 +55,9 @@ node {
      if(preVersionFileExist) {
         def preVersionCheck = readFile("/tmp/preversion").trim()
         def result=combinePath(version,preVersionCheck)
-        print "compare ${result}"
+        if(result != 1) {
+          sh "echo ${version} > /tmp/preversion"
+        }
      }
      else {
         sh "echo ${version} > /tmp/preversion"
