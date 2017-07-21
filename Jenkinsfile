@@ -54,7 +54,7 @@ node {
      def preVersionFileExist= fileExists '/tmp/preversion'
      if(preVersionFileExist) {
         def preVersionCheck = readFile("/tmp/preversion")
-        if(version.toInteger() < preVersionCheck.toInteger()) {
+        if(Float.parseFloat(version) < Float.parseFloat(preVersionCheck)) {
           print "writting to file.."
           sh "echo ${version} > /tmp/preversion"
         }
