@@ -1,3 +1,5 @@
+this.getClass().classLoader.rootLoader.addURL(new File("/var/lib/jenkins/jar/snakeyaml-1.4.jar").toURL())
+
 import groovy.json.JsonSlurperClassic
 
 import org.yaml.snakeyaml.DumperOptions
