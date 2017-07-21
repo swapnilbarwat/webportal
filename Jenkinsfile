@@ -1,5 +1,8 @@
 import groovy.json.JsonSlurperClassic
 
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+
 def version = ''
 node {
    stage('checkout') { // for display purposes
@@ -59,7 +62,18 @@ node {
       input message: 'Deploy to full cluster?'
    }
    stage('undeploy previous version') {
-
+        def prevVersion=readFile("/tmp/preversion")
+        Yaml yaml = new Yaml()
+        def data=readFile("deployment/blueprint.yml")
+        def Map map = (Map) yaml.load(data)
+        map.name="webportal:${prevVersion}"
+        map.clusters.webportal.services.breed.deployable="harshals/webportal:${prevVersion}"
+        DumperOptions options = new DumperOptions()
+        options.setPrettyFlow(true)
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
+        yaml = new Yaml(options)
+        yaml.dump(map, new FileWriter(prevblueprint.yml))
+        sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://104.154.31.116:8080//api/v1/deployments/webportal:${prevVersion} --data-binary @prevblueprint.yml"
    }
 }
 
