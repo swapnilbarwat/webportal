@@ -55,6 +55,7 @@ node {
      if(preVersionFileExist) {
         def preVersionCheck = readFile("/tmp/preversion")
         if(version < preVersionCheck) {
+          print "writting to file.."
           sh "echo ${version} > /tmp/preversion"
         }
      }
