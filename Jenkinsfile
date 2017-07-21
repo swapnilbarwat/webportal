@@ -85,8 +85,8 @@ def jsonParse(def json) {
 
 def combinePath(version1, version2) 
 {
-  String[] levels1 = version1.split("\\.");
-    String[] levels2 = version2.split("\\.");
+    String[] levels1 = version1.split(".");
+    String[] levels2 = version2.split(".");
 
     int length = Math.max(levels1.length, levels2.length);
     for (int i = 0; i < length; i++){
