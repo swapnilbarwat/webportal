@@ -59,9 +59,12 @@ node {
       input message: 'Deploy to full cluster?'
    }
    stage('undeploy previous version') {
-        def preVersion=readFile("/tmp/preversion")
-        sh "cat deployment/blueprint.yml | sed -e \"s/${version}/${preVersion}/g\" > oldDeployment.yml"
-        sh "cat oldDeployment.yml"
+        script {
+          def preVersion=readFile("/tmp/preversion")
+          def ver_script = $/eval "cat deployment/blueprint.yml | sed -e \"s/${version}/${preVersion}/g\" > oldDeployment.yml"/$
+          sh(script: "${ver_script}", returnStdout: true)
+          sh "cat oldDeployment.yml"
+        }
    }
 }
 
