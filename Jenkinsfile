@@ -51,39 +51,26 @@ node {
           {
             stage('Deploying to cluster') { // for display purposes
               sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+              sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/external.yml"
               deploymentPresentFlag=false
             }
           }
         }
      }
-     def preVersionFileExist= fileExists '/tmp/preversion'
-     if(preVersionFileExist) {
-        def preVersionCheck = readFile("/tmp/preversion").trim()
-        def result=combinePath(version,preVersionCheck)
-        if(result != 1) {
-          sh "echo ${version} > /tmp/preversion"
-        }
-     }
-     else {
-        sh "echo ${version} > /tmp/preversion"
-     }
 }
 
 node {
    if(deploymentPresentFlag == true) {
-    stage('move full') { // for display purposes
+    stage('move full & undeploy previous version') { 
       input message: 'Deploy to full cluster?'
+         deploymentContent=readFile("deployment/blueprint.yml")
+         deploymentContent.replace("0.0.2","0.0.1")
+         def fp = new File("/tmp/oldDeployment.yml")
+         fp.write(deploymentContent)
+         echo "${deploymentContent}"
+         sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/deployments/webportal:0.0.1 --data-binary @/tmp/oldDeployment.yml"
+         sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/gateways/webportal"
        }
-       stage('undeploy previous version') {
-            script {
-              def preVersion=readFile("/tmp/preversion")
-              deploymentContent=readFile("deployment/blueprint.yml")
-              deploymentContent.replace(preVersion,version)
-              def fp = new File("/tmp/oldDeployment.yml")
-              fp.write(deploymentContent)
-              echo "${deploymentContent}"
-            }
-        }
    }
 }
 
