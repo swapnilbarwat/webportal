@@ -25,7 +25,7 @@ node {
    if(objectList.size() == 0)
    {
     stage('Deploying to cluster') { // for display purposes
-       sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://104.154.31.116:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+       sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://104.198.211.7:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
     }
    }
    else {
@@ -39,14 +39,14 @@ node {
           {
             stage('50-50% deployment') { // for display purposes
               input message: 'Deploy to cluster? This will rollout new build to 50% cluster.'
-              sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://104.154.31.116:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
-              sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://104.154.31.116:8080/api/v1/gateways --data-binary @deployment/split_gateway.yml"
+              sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://104.198.211.7:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+              sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://104.198.211.7:8080/api/v1/gateways --data-binary @deployment/split_gateway.yml"
             }
           }
           else
           {
             stage('Deploying to cluster') { // for display purposes
-              sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://104.154.31.116:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+              sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://104.198.211.7:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
             }
           }
         }
