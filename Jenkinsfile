@@ -27,7 +27,7 @@ node {
    if(objectList.size() == 0)
    {
     stage('Deploying to cluster') { // for display purposes
-       sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"\
+       sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
        deploymentPresentFlag=false
     }
    }
