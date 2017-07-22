@@ -2,6 +2,7 @@ import groovy.json.JsonSlurperClassic
 
 def version = ''
 def vampIP="104.198.21.175"
+def deploymentPresentFlag = false
 node {
    stage('checkout') { // for display purposes
       // Get some code from a GitHub repository
@@ -26,7 +27,8 @@ node {
    if(objectList.size() == 0)
    {
     stage('Deploying to cluster') { // for display purposes
-       sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+       sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"\
+       deploymentPresentFlag=false
     }
    }
    else {
@@ -42,12 +44,14 @@ node {
               input message: 'Deploy to cluster? This will rollout new build to 50% cluster.'
               sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
               sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/split_gateway.yml"
+              deploymentPresentFlag=true
             }
           }
           else
           {
             stage('Deploying to cluster') { // for display purposes
               sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+              deploymentPresentFlag=false
             }
           }
         }
@@ -66,17 +70,19 @@ node {
 }
 
 node {
-   stage('move full') { // for display purposes
+   if(deploymentPresentFlag == true) {
+    stage('move full') { // for display purposes
       input message: 'Deploy to full cluster?'
-   }
-   stage('undeploy previous version') {
-        script {
-          def preVersion=readFile("/tmp/preversion")
-          deploymentContent=readFile("deployment/blueprint.yml")
-          deploymentContent.replace(preVersion,version)
-          def fp = new File("/tmp/oldDeployment.yml")
-          fp.write(deploymentContent)
-          echo "${deploymentContent}"
+       }
+       stage('undeploy previous version') {
+            script {
+              def preVersion=readFile("/tmp/preversion")
+              deploymentContent=readFile("deployment/blueprint.yml")
+              deploymentContent.replace(preVersion,version)
+              def fp = new File("/tmp/oldDeployment.yml")
+              fp.write(deploymentContent)
+              echo "${deploymentContent}"
+            }
         }
    }
 }
