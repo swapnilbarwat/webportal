@@ -27,6 +27,7 @@ node {
     stage('Deploying to cluster') { // for display purposes
        sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
        deploymentPresentFlag=false
+       sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/gateways/webportal"
        sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/external.yml"
     }
     objectList.each {
