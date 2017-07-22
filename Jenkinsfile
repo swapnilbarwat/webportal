@@ -24,39 +24,27 @@ node {
 node {
    sh "curl -X GET http://${vampIP}:8080/api/v1/deployments > output.json"
    def objectList = jsonParse(readFile('output.json'))
-   if(objectList.size() == 0)
-   {
     stage('Deploying to cluster') { // for display purposes
        sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
        deploymentPresentFlag=false
+       sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/external.yml"
     }
-   }
-   else {
-       objectList.each {
-          print "Name: $it.name"
-          def values = "${it.name}".tokenize(':')
-          print values[0]
-          print values[1]
+    objectList.each {
+      print "Name: $it.name"
+      def values = "${it.name}".tokenize(':')
+      print values[0]
+      print values[1]
           
-          if(values[1] != "${version}")
-          {
-            stage('50-50% deployment') { // for display purposes
-              input message: 'Deploy to cluster? This will rollout new build to 50% cluster.'
-              sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
-              sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/split_gateway.yml"
-              deploymentPresentFlag=true
-            }
-          }
-          else
-          {
-            stage('Deploying to cluster') { // for display purposes
-              sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
-              sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/external.yml"
-              deploymentPresentFlag=false
-            }
-          }
+      if(values[1] != "${version}")
+      {
+        stage('50-50% deployment') { // for display purposes
+          input message: 'Deploy to cluster? This will rollout new build to 50% cluster.'
+          sh "curl -H \"Content-Type: application/x-yaml\" -X PUT http://${vampIP}:8080/api/v1/deployments/webportal:${version} --data-binary @deployment/blueprint.yml"
+          sh "curl -H \"Content-Type: application/x-yaml\" -X POST http://${vampIP}:8080/api/v1/gateways --data-binary @deployment/split_gateway.yml"
+          deploymentPresentFlag=true
         }
-     }
+      }
+    }
 }
 
 node {
