@@ -1,4 +1,4 @@
-name: webportal:0.0.2
+name: webportal:0.0.1
 clusters:
   webportal:
     services:
