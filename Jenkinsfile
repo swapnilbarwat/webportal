@@ -3,6 +3,7 @@ import groovy.json.JsonSlurperClassic
 def version = ''
 def vampIP="104.198.21.175"
 def deploymentPresentFlag = false
+def prevVersion = "0.0.1"
 node {
    stage('checkout') { // for display purposes
       // Get some code from a GitHub repository
@@ -52,12 +53,7 @@ node {
    if(deploymentPresentFlag == true) {
     stage('move full & undeploy previous version') { 
       input message: 'Deploy to full cluster?'
-         deploymentContent=readFile("deployment/blueprint.yml")
-         deploymentContent.replace("0.0.2","0.0.1")
-         def fp = new File("/tmp/oldDeployment.yml")
-         fp.write(deploymentContent)
-         echo "${deploymentContent}"
-         sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/deployments/webportal:0.0.1 --data-binary @/tmp/oldDeployment.yml"
+         sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/deployments/webportal:${prevVersion} --data-binary @/tmp/oldDeployment.yml"
          sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/gateways/webportal_split"
        }
    }
