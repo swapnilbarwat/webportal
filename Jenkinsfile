@@ -58,7 +58,6 @@ node {
          fp.write(deploymentContent)
          echo "${deploymentContent}"
          sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/deployments/webportal:0.0.1 --data-binary @/tmp/oldDeployment.yml"
-         sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/gateways/webportal"
          sh "curl -H \"Content-Type: application/x-yaml\" -X DELETE http://${vampIP}:8080/api/v1/gateways/webportal_split"
        }
    }
