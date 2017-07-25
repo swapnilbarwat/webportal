@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurperClassic
 
 def version = ''
-def vampIP="104.198.21.175"
+def vampIP="35.188.68.182"
 def deploymentPresentFlag = false
 def prevVersion = "0.0.1"
 node {
