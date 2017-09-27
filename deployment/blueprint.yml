@@ -1,10 +1,10 @@
-name: webportal:0.0.2
+name: webportal:0.0.1
 clusters:
   webportal:
     services:
       breed: 
         name: webportal
-        deployable: harshals/webportal:0.0.2
+        deployable: harshals/webportal:0.0.1
         ports:
           app_port: 80/tcp
       scale:
