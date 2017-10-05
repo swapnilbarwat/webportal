@@ -2,5 +2,5 @@
 name: webportal   # name of our gateway
 port: 5000/http           # external gateway to expose
 routes:
-  webportal:0.0.1/webportal/app_port:
+  webportal:0.0.2/webportal/app_port:
     weight: 100%          # all traffic will be sent here
